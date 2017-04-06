@@ -1,4 +1,6 @@
 # Import required modules
+import string
+import random
 import requests
 import urllib.parse as urlparse
 
@@ -38,7 +40,7 @@ class scan(object):
 		payloads = payload_open.readlines()
 		
 		# Parse the URL
-		parsed = urlparse.urlparse(link)
+		parsed = urlparse.urlparse(url)
 		
 		# Generate the seed
 		seed = "".join(random.choice(string.ascii_uppercase) for i in range(5))
@@ -54,13 +56,16 @@ class scan(object):
 			yield None
 			return 0
 			
+		# Initialize parameter list
+		param_list = []
+			
 		# Build a for loop to handle parameters and dump them into a 2D list
 		for param, value in get_params:
 			# Append parameter and value into param list
 			param_list.append([param, str(value)])
 			
 		# Make a copy of the parameter list
-		param_list_clone = param_lists
+		param_list_clone = param_list
 		
 		# Build a for loop to go one parameter at a time
 		for i in range(0, len(param_list)):
@@ -70,7 +75,7 @@ class scan(object):
 				seeded_payload = payload.replace("XXXXX", seed)
 				
 				# Set the payload in the current parameter
-				param_list[i:1] = seeded_payload
+				param_list[i][1] = seeded_payload
 				
 				# Convert the parameter list to a dictionary
 				scan_params = dict(param_list)
@@ -80,7 +85,7 @@ class scan(object):
 				
 				# Attempt to get raw HTML
 				try:
-					raw = requests.get(link, params = url_params, headers = url_headers)
+					raw = requests.get(url, params = scan_params, headers = scan_headers)
 				except:
 					# Raise an exception
 					raise Exception("[E] Unable to get HTML for scanning!")
@@ -90,7 +95,7 @@ class scan(object):
 					# Yield results
 					yield True
 					yield param_list[i][0]
-					yield payloads[p]
+					yield payload
 					return 0
 					
 			# Revert the paramater list back

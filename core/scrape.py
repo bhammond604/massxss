@@ -117,7 +117,8 @@ def __init__(query, pages):
 			all_urls.append(url)
 			
 		# Wait a 5 to 30 seconds
-		time.sleep(random.randint(10, 30))
+		print("[I] Sleeping 30 to 60 seconds!")
+		time.sleep(random.randint(30, 60))
 		
 	# Return the URLs
 	return all_urls
