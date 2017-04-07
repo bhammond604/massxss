@@ -20,7 +20,7 @@ def main():
 	
 	# Attempt to call getopt.getopt()
 	try:
-		opts, args = getopt.getopt(sys.argv[1:], "hvq:p:x:", ["help", "version", "query=", "pages=", "payloads="])
+		opts, args = getopt.getopt(sys.argv[1:], "hvq:p:x:r:", ["help", "version", "query=", "pages=", "payloads=", "proxy="])
 	except:
 		# Raise an exception
 		raise Exception("[E] Error processing command line arguments!")
@@ -29,6 +29,7 @@ def main():
 	query = None
 	pages = 2
 	payload_file = None
+	proxy = None
 	
 	# Build a for loop to process arguments
 	for opt, arg in opts:
@@ -36,7 +37,7 @@ def main():
 		if opt in ("-h", "--help"):
 			# Display help message and exit
 			print("USAGE:")
-			print("\tmassxss [-h] [-v] [-q QUERY] [-p PAGES] [-x PAYLOADS]")
+			print("\tmassxss [-h] [-v] [-q QUERY] [-p PAGES] [-x PAYLOADS] [-r PROXY]")
 			print("")
 			print("Scrape Google and scan the results for XSS")
 			print("")
@@ -48,6 +49,7 @@ def main():
 			print("\t-h, --help\tDisplay this message and exit")
 			print("\t-v, --version\tDisplay version info and exit")
 			print("\t-p, --pages PAGES\tSpecify the number of pages to scan. Default is 2")
+			print("\t-r, --proxy PROXY\tSpecify proxy for scraping in type%ip:port format. Supports HTTPS and HTTP proxies")
 			exit(0)
 			
 		# If the -v or --version option was used
@@ -73,6 +75,11 @@ def main():
 			# Set the payload file
 			payload_file = arg	
 			
+		# If the -r or --proxy option was used
+		elif opt in ("-r", "--proxy"):
+			# Set the proxy
+			proxy = arg
+			
 		# If an invalid option was used
 		else:
 			# Raise an exception
@@ -89,7 +96,7 @@ def main():
 
 	# Attempt to get the URLs
 	try:
-		urls = core.scrape.__init__(query, pages)
+		urls = core.scrape.__init__(query, pages, proxy)
 	except:
 		# Raise an exception
 		raise Exception("[E] Error scraping Google!")

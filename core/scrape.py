@@ -1,6 +1,7 @@
 # Import required modules
 import os
 import sys
+import re
 import time
 import string
 import random
@@ -14,7 +15,7 @@ class scrape(object):
 	# Functions: __init__(), get_page(), get_urls()
 	
 	# Define the __init__() function
-	def __init__(self, query, pages):
+	def __init__(self, query, pages, proxy):
 		# Function: __init__()
 		# Purpose: Initialize the scraper
 		
@@ -26,9 +27,10 @@ class scrape(object):
 		# Dump everything to self
 		self.query = query
 		self.pages = pages
+		self.proxy = proxy
 		
 	# Define the get_page function
-	def get_page(self, query, page_id):
+	def get_page(self, query, page_id, proxy):
 		# Function: get_page()
 		# Purpose: Get the raw HTML of the specified result page
 		
@@ -45,14 +47,32 @@ class scrape(object):
 		
 		# Set the scrape paramaters and headers
 		scrape_params = {"q": query, "start": str(page_id)}
-		scrape_headers = {"User-Agent": random.choice(user_agents)}
+		scrape_headers = {"User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"}
 		
-		# Attempt to get the raw HTML
-		try:
-			raw_html = requests.get(url, params = scrape_params, headers = scrape_headers)
-		except:
-			# Raise an exception
-			raise Exception("[E] Unable to retrieve raw HTML!")
+		# Determine if proxy was used
+		if proxy == None:
+			# No proxy was used
+			# Attempt to get the raw HTML
+			try:
+				raw_html = requests.get(url, params = scrape_params, headers = scrape_headers)
+			except:
+				# Raise an exception
+				raise Exception("[E] Unable to retrieve raw HTML!")
+				
+		else:
+			# Proxy was used
+			# Split the string
+			proxy_type, address = proxy.split("%")
+			
+			# Set the proxy dictionary
+			proxy_dict = {proxy_type: address}
+			
+			# Attempt to get the raw HTML
+			try:
+				raw_html = requests.get(url, params = scrape_params, headers = scrape_headers, proxies = proxy_dict)
+			except:
+				# Raise an exception
+				raise Exception("[E] Unable to retrieve raw HTML!")
 
 		# Return the raw HTML
 		return raw_html
@@ -69,23 +89,32 @@ class scrape(object):
 		soup = bs4.BeautifulSoup(raw_html.text, "html.parser")
 		
 		# Build a for loop to obtain the H3 tags with CSS class r
-		for h3_tag in soup.find_all("h3", class_ = "r"):
-			# Extract the URL
-			url = h3_tag.a.get("href")
+		for cite_tag in soup.find_all("cite"):
+			# Extract the full URL
+			full_url = str(cite_tag)
+			
+			# Create regular expression to strip html
+			html_stripper = re.compile(r'<.*?>')
+			
+			# Get the URL
+			part_url = html_stripper.sub('', full_url)
+			
+			# Append http:// to url
+			url = "http://{}".format(part_url)
 		
 			# Append to the URL list
 			url_list.append(url)
-			
+		
 		# Return the URL list
 		return url_list
 			
 # Define the __init__() function
-def __init__(query, pages):
+def __init__(query, pages, proxy):
 	# Function: __init__()
 	# Purpose: Provide logic to scrape Google
 	
 	# Create the scraper object
-	scraper = scrape(query, pages)
+	scraper = scrape(query, pages, proxy)
 	
 	# Define all URLs
 	all_urls = []
@@ -97,7 +126,7 @@ def __init__(query, pages):
 		
 		# Attempt to get raw HTML
 		try:
-			raw_html = scraper.get_page(query, page_id)
+			raw_html = scraper.get_page(query, page_id, proxy)
 		except:
 			# Raise an exception
 			raise Exception("[E] Unable to get raw HTML!")
@@ -105,7 +134,9 @@ def __init__(query, pages):
 		# Handle 503
 		if raw_html.status_code == 503:
 			# Display warning message
-			print("[U] Temporarily banned by Google!")
+			print("[W] Temporarily banned by Google!")
+			print("[+] CTRL-C to stop scan, ignore to continue")
+			print("==============================")
 		
 		# Attempt to retrieve the URLS from the HTML
 		try:
@@ -119,9 +150,10 @@ def __init__(query, pages):
 			# Append to all URLS
 			all_urls.append(url)
 			
-		# Wait a 5 to 30 seconds
-		print("[I] Sleeping 5 to 60 seconds!")
-		time.sleep(random.randint(5, 60))
+		# Wait a 5 to 20 seconds
+		print("[I] Sleeping 5 to 20 seconds!")
+		print("==============================")
+		time.sleep(random.randint(5, 20))
 		
 	# Return the URLs
 	return all_urls
