@@ -88,7 +88,7 @@ class scrape(object):
 		# Create the soup object
 		soup = bs4.BeautifulSoup(raw_html.text, "html.parser")
 		
-		# Build a for loop to obtain the H3 tags with CSS class r
+		# Build a for loop to obtain the cite tags
 		for cite_tag in soup.find_all("cite"):
 			# Extract the full URL
 			full_url = str(cite_tag)
@@ -99,8 +99,21 @@ class scrape(object):
 			# Get the URL
 			part_url = html_stripper.sub('', full_url)
 			
-			# Append http:// to url
-			url = "http://{}".format(part_url)
+			# Check if http:// in url
+			if "http://" in part_url:
+				# No need to append it
+				url = part_url
+			
+			# Check if https:// in url
+			elif "https://" in part_url:
+				# No need to append it
+				url = part_url	
+			
+			else:	
+				# Append http:// to url
+				url = "http://{}".format(part_url)
+			
+			print(url)
 		
 			# Append to the URL list
 			url_list.append(url)
