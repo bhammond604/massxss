@@ -38,7 +38,10 @@ class scrape(object):
 		# Set the user agents
 		user_agents = ("Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.75 Safari/537.36",
 		               "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:26.0) Gecko/20100101 Firefox/45.0.2",
-		               "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.10136")
+		               "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.10136",
+		               "Mozilla/5.0 (X11; Linux x86_64; rv:26.0) Gecko/20100101 Firefox/45.0.2",
+		               "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.75 Safari/537.36",
+		               "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/537.73.11 (KHTML, like Gecko) Version/9.0.3 ",)
 		
 		# Set the scrape paramaters and headers
 		scrape_params = {"q": query, "start": str(page_id)}
@@ -117,8 +120,8 @@ def __init__(query, pages):
 			all_urls.append(url)
 			
 		# Wait a 5 to 30 seconds
-		print("[I] Sleeping 30 to 60 seconds!")
-		time.sleep(random.randint(30, 60))
+		print("[I] Sleeping 5 to 60 seconds!")
+		time.sleep(random.randint(5, 60))
 		
 	# Return the URLs
 	return all_urls

@@ -86,7 +86,7 @@ class scan(object):
 				# Attempt to get raw HTML
 				try:
 					raw = requests.get(url, params = scan_params, headers = scan_headers)
-				except:
+				except requests.exceptions.InvalidScema:
 					# Raise an exception
 					raise Exception("[E] Unable to get HTML for scanning!")
 					
