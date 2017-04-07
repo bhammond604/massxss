@@ -112,8 +112,6 @@ class scrape(object):
 			else:	
 				# Append http:// to url
 				url = "http://{}".format(part_url)
-			
-			print(url)
 		
 			# Append to the URL list
 			url_list.append(url)
