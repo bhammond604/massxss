@@ -163,7 +163,6 @@ def __init__(query, pages, proxy):
 			
 		# Wait a 5 to 20 seconds
 		print("[I] Sleeping 5 to 20 seconds!")
-		print("==============================")
 		time.sleep(random.randint(5, 20))
 		
 	# Return the URLs

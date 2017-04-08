@@ -129,14 +129,17 @@ def __init__(urls, payload_file):
 		# Handle the results
 		if vuln_status == True:
 			# Display message
+			print("==============================")
 			print("[I] Vulnerable site!")
 			print("[+] URL: {}".format(url))
 			print("[+] Parameter: {}".format(param))
-			print("[+] Payload: {}".format(payload))
-			print("==============================")
+			print("[+] Payload: {}".format(payload.strip()))
 			
 			# Increment vuln_sites
 			vuln_sites = vuln_sites + 1
 			
 	# Display finish message
-	print("[F] Vulnerable sites: {}".format(int(vuln_sites)))
+	print("==============================")
+	print("[F] Scan finished!")
+	print("[+] Scanned sites: {}".format(len(urls)))
+	print("[+] Vulnerable sites: {}".format(int(vuln_sites)))
