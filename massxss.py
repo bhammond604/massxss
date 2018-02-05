@@ -1,5 +1,5 @@
 # Mass XSS Scanner
-# Version 1.0.0
+# Version 1.0.1
 # By Brandon Hammond
 
 # Import required modules
@@ -10,7 +10,7 @@ import core.scrape
 import core.scan
 
 # Set the version and author
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 __author__ = "Brandon Hammond"
 
 # Define the main() function
@@ -21,9 +21,9 @@ def main():
 	# Attempt to call getopt.getopt()
 	try:
 		opts, args = getopt.getopt(sys.argv[1:], "hvq:p:x:r:", ["help", "version", "query=", "pages=", "payloads=", "proxy="])
-	except:
-		# Raise an exception
-		raise Exception("[E] Error processing command line arguments!")
+	except getopt.GetoptError as err_msg:
+		# Display the error message and exit
+		print("[E] Error processing command line arguments: {}!".format(err_msg))
 	
 	# Predefine variables with their default values
 	query = None
